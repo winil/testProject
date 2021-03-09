@@ -1,0 +1,26 @@
+<div id="app">
+    <!-- <div>{{message}}</div>
+    <input type="text" v-model="message">
+    <input type="text" v-model="message"> -->
+    <span v-bind:title="message2">
+        This is title
+    </span>
+    <button  v-on:click="haha">button</button>
+</div>
+
+<script type="module">
+import {toyVue as Vue} from './toy-vue.js'
+
+    var app = new Vue({
+        el:"#app",
+        data:{
+            message:"Hello Vue",
+            message2:"hi I am title"
+        },
+        methods:{
+            haha(){
+                console.log("haha")
+            }
+        }
+    })
+</script>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>othello-test</title>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        #app{
+            width:1000px;
+            margin:30px auto;
+        }
+        .cell{
+            width:100px;
+            height: 100px;
+            display:inline-block;
+            vertical-align:bottom;
+            background-color: green;
+            border:1px solid #fff;
+        }
+        .cell.black::after, .cell.white::after{
+            display: block;
+            content:"";
+            width:80px;
+            height: 80px;
+            margin:5px;
+            background-color: #000;
+            border-radius: 50%;
+        }
+        .cell.white::after{
+            background-color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="color"></div>
+    <div id="app"></div>
+
+    <script>
+        let app = document.getElementById("app");
+
+        let board = [
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 2, 1, 0, 0, 0,
+            0, 0, 0, 1, 2, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+        ]
+
+        let color = 1;//1黑色 2白色
+
+        let direction = [
+            [-1,-1], //左上
+            [0,-1], //左
+            [1,-1], //左下
+            [-1,0], //上
+            [1,0], //下
+            [-1,1], //右上
+            [0,1], //右
+            [1,1], //右下
+        ]
+        
+        render();
+        
+        function checkColor(status){
+            let target = document.getElementById("color");
+            target.removeChild(target.childNodes[0]);
+            target.appendChild(document.createTextNode('haha'))
+        }
+
+        function checkWinner(){
+            let black = 0, white = 0;
+            for(let i of board){
+                if(board[i] === 1){
+                    black++
+                }else if(board[i] === 2){
+                    white++
+                }
+            }
+            return black > white ? 1 : 2
+        }
+        
+        // 检测是否通过
+        function checkPass(){
+            let bool = false;
+            for(let i = 0; i<64;i++){
+                let x = i % 8, y = Math.floor(i / 8);
+                if(move(x, y, true)){
+                    bool = true;
+                }
+            }
+            return bool;
+        }
+
+        function move(ox, oy, checkOnly = false){
+            console.log("x:",ox,"y:",oy)
+            if(board[ oy*8 + ox ] !== 0){
+                return;
+            }
+            let canMove = false;//是否可翻转
+            for(let item of direction){
+                
+                let isNext = false;//是否可下子
+                let directionCanMove = false;
+                let x = ox, y = oy;
+                
+                while(true){
+                    if( x < 0 || x > 7 || y <0 || y >7 ){
+                        break;
+                    }
+                    x += item[1]
+                    y += item[0]
+
+                    if(board[ y*8 + x ] === 3 - color){
+                        isNext = true;
+                    }
+                    if(board[ y*8 + x ] === color){
+                        if(isNext){
+                            directionCanMove = true;
+                        }
+                        
+                        break;
+                    }
+                    if(board[ y*8 + x ] === 0) {//在空白处检查周围无子时退出循环
+                            break;
+                     }
+                }
+
+                while(true){
+                    if( x === ox && y=== oy ){
+                        break;
+                    }
+                    x -= item[1]
+                    y -= item[0]
+                    if(directionCanMove && !checkOnly){
+                        board[ y*8 + x ] = color;
+                    }
+                }
+                canMove = canMove || directionCanMove;
+
+                
+            }
+            if(canMove && !checkOnly){
+               color = 3 - color;//变色
+            }
+            return canMove;
+        }
+
+        function render(){
+            console.log("**************render****************")
+            app.innerHTML = "";
+            for(let i = 0; i<64;i++){
+                let x = i % 8, y = Math.floor(i / 8);
+                let element = document.createElement('div');
+                element.className = `cell ${board[i]===1?"black":""} ${board[i]===2?"white":""}`
+
+                
+                element.addEventListener('click',()=>{
+                    move(x,y)
+                    if(!checkPass()){[]
+                        color = 3 - color
+                        if(!checkPass()){
+                            const winner = checkWinner() === 1 ? 'black' : 'white'
+                            alert(`Game Over!  winner is ${winner}`)
+                        }
+                    }
+                    
+                    render()
+                    
+                    
+                })
+                app.appendChild(element)
+                if(x === 7){
+                    app.appendChild(document.createElement('br'));
+                }
+                
+            }
+        }
+    </script>
+</body>
+</html>
