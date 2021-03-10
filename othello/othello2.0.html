@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./othello.js"></script>
+    <title>othello2.0版本</title>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        #app{
+            width:1000px;
+            margin:30px auto;
+        }
+        .cell{
+            width:100px;
+            height: 100px;
+            display:inline-block;
+            vertical-align:bottom;
+            background-color: green;
+            border:1px solid #fff;
+        }
+        .cell.black::after, .cell.white::after{
+            display: block;
+            content:"";
+            width:80px;
+            height: 80px;
+            margin:5px;
+            background-color: #000;
+            border-radius: 50%;
+        }
+        .cell.white::after{
+            background-color: #fff;
+        }
+        .color{
+            text-align: center;
+            padding: 30px;
+            font-size: 36px;
+            color:#333;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <script>
+        class OthelloView{
+            constructor(game, app){
+                this.game = game;
+                this.app = app;
+                this.show(game.pattern)
+            }
+            show(pattern){
+                console.log("**************render****************:")
+                this.app.innerHTML = "";
+                let colorElement = document.createElement('div')
+                colorElement.className = "color";
+                colorElement.textContent = this.game.color === 1 ? '下棋子：黑色' : '下棋子：白色'
+                this.app.appendChild(colorElement)
+                for(let i = 0; i<64;i++){
+                    let x = i % 8, y = Math.floor(i / 8);
+                    let element = document.createElement('div');
+                    element.className = `cell ${pattern.board[i]===1?"black":""} ${pattern.board[i]===2?"white":""}`
+
+                    
+                    element.addEventListener('click',()=>{
+                        this.game.move(x,y)
+                        this.show(this.game.pattern)
+                        
+                        
+                    })
+                    this.app.appendChild(element)
+                    if(x === 7){
+                        this.app.appendChild(document.createElement('br'));
+                    }
+                }
+            }
+        }
+
+        new OthelloView(new OthelloGame, document.getElementById("app"))
+
+    </script>
+</body>
+</html>

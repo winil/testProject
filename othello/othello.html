@@ -77,10 +77,10 @@
 
         function checkWinner(){
             let black = 0, white = 0;
-            for(let i of board){
-                if(board[i] === 1){
+            for(let item of board){
+                if(item === 1){
                     black++
-                }else if(board[i] === 2){
+                }else if(item === 2){
                     white++
                 }
             }
@@ -94,13 +94,13 @@
                 let x = i % 8, y = Math.floor(i / 8);
                 if(move(x, y, true)){
                     bool = true;
+                    break;
                 }
             }
             return bool;
         }
 
         function move(ox, oy, checkOnly = false){
-            console.log("x:",ox,"y:",oy)
             if(board[ oy*8 + ox ] !== 0){
                 return;
             }
@@ -164,7 +164,7 @@
                 
                 element.addEventListener('click',()=>{
                     move(x,y)
-                    if(!checkPass()){[]
+                    if(!checkPass()){
                         color = 3 - color
                         if(!checkPass()){
                             const winner = checkWinner() === 1 ? 'black' : 'white'
@@ -183,6 +183,7 @@
                 
             }
         }
+
     </script>
 </body>
 </html>
